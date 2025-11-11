@@ -22,7 +22,7 @@ Configuración “de escenario”
 'BOL' = absorbido BOL [W]
 'EOL' = absorbido EOL [W]
 """
-STATE = "INC"
+STATE = "BOL"
 
 # ----------------------------
 # Utilidades y dominio angular
@@ -76,9 +76,9 @@ def get_params(state: str) -> Tuple[float, float, float, float, str]:
     if st == "INC":
         return 1.0, 1.0, 1.0, 1.0, "Flujo solar incidente"
     elif st == "BOL":
-        return ALPHA_S_BOL, AREA_PANEL, F_AEFF, ETA_ELEC, "Flujo solar absorbido en BOL"
+        return ALPHA_S_BOL, AREA_PANEL*2, F_AEFF, ETA_ELEC, "Flujo solar absorbido en BOL"
     elif st == "EOL":
-        return ALPHA_S_EOL, AREA_PANEL, F_AEFF, ETA_ELEC, "Flujo solar absorbido en EOL"
+        return ALPHA_S_EOL, AREA_PANEL*2, F_AEFF, ETA_ELEC, "Flujo solar absorbido en EOL"
     else:
         raise ValueError(f"STATE inválido: {state}")
 
