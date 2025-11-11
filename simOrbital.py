@@ -120,7 +120,8 @@ def plot_aft_windows(temps_K: np.ndarray, t_axis: np.ndarray) -> None:
     ax1.plot(t_axis, np.full_like(t_axis, AFT_OBC_MAX - 273.15), label="AFT max", linestyle="--")
     ax1.set_xlabel("Tiempo [s]")
     ax1.set_ylabel("Temperatura [°C]")
-    ax1.legend(loc="best")
+    # Poner la leyenda dentro, esquina superior derecha
+    ax1.legend(loc="upper right", borderaxespad=0.0, fontsize="small")
     ax1.grid(True)
 
     # Nodo 13 (Batería/Tanque)
@@ -129,9 +130,11 @@ def plot_aft_windows(temps_K: np.ndarray, t_axis: np.ndarray) -> None:
     ax2.plot(t_axis, np.full_like(t_axis, AFT_BAT_MAX - 273.15), label="AFT max", linestyle="--")
     ax2.set_xlabel("Tiempo [s]")
     ax2.set_ylabel("Temperatura [°C]")
-    ax2.legend(loc="best")
+    # También en la esquina superior derecha del subplot
+    ax2.legend(loc="upper right", borderaxespad=0.0, fontsize="small")
     ax2.grid(True)
 
+    # Ajuste de layout estándar (las leyendas están dentro de los ejes ahora)
     fig.tight_layout()
 
 def print_extremes(temps_K: np.ndarray) -> None:
