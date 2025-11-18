@@ -19,7 +19,7 @@ ORBITAL_PERIOD = 5980.55  # Período orbital [s]
 T_VENUS = 228  # Temperatura de Venus [K]
 T_SPACE = 3  # Temperatura del espacio [K]
 SCV = 2611  # Constante solar en Venus [W/m²]
-GAMMA = 0.77  # Factor de albedo de Venus
+GAMMA = 0.60  # Factor de albedo de Venus
 
 # ==========================================
 # TEMPERATURAS OPERACIONALES (AFT)
