@@ -68,8 +68,8 @@ ALPHA_WTC_EOL = 0.38  # Absortividad coating EOL
 # ==========================================
 # FACTORES DE EFICIENCIA
 # ==========================================
-ETA_ELEC = 1  # Factor de rendimiento energético
-F_AEFF = 1  # Factor de área efectiva
+ETA_ELEC = 0.8  # Factor de rendimiento energético
+F_AEFF = 0.9  # Factor de área efectiva
 
 # ==========================================
 # PROPIEDADES TÉRMICAS DE NODOS

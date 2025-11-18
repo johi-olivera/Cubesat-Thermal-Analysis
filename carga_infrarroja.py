@@ -23,8 +23,8 @@ from constants import (
 Configuración “de escenario”
 ----------------------------
 'INC' = flujo incidente [W/m^2]
-'BOL' = absorbido BOL [W]
-'EOL' = absorbido EOL [W]
+'BOL' = flujo absorbido BOL [W/m^2]
+'EOL' = flujo absorbido EOL [W/m^2]
 """
 STATE = "INC"
 
@@ -53,12 +53,12 @@ def get_params(state: str):
     elif st == "BOL":
         eps_sa = lambda: EPS_SA_BOL
         eps_wtc = lambda: EPS_WTC_BOL
-        Ai = AREA_CARA_Y
+        Ai = 1.0
         title = "Flujo infrarrojo absorbido en BOL"
     elif st == "EOL":
         eps_sa = lambda: EPS_SA_EOL
         eps_wtc = lambda: EPS_WTC_EOL
-        Ai = AREA_CARA_Y
+        Ai = 1.0
         title = "Flujo infrarrojo absorbido en EOL"
     else:
         raise ValueError(f"STATE inválido: {state}")
@@ -69,10 +69,10 @@ def get_params(state: str):
 # ----------------------------
 def ir_power(F_i: float, eps_i: float, Ai: float, npts: int) -> np.ndarray:
     """
-    Q = ε_i * F_i * Ai * σ * T_V^4  (constante en θ)
+    q = ε_i * F_i * σ T_V^4  (flujo, W/m², constante en θ)
     Devuelve array constante para graficar vs. θ.
     """
-    value = eps_i * F_i * Ai * SIGMA * (T_VENUS ** 4)
+    value = eps_i * F_i * SIGMA * (T_VENUS ** 4)
     return np.full(npts, value, dtype=float)
 
 # ----------------------------
@@ -96,6 +96,7 @@ def main() -> None:
     ax = plt.gca()
     ax.grid(True, alpha=0.35)
     ax.set_xlim(0, 2*np.pi)
+    ax.set_ylim(0, 150)
     ax.set_xlabel("Ángulo orbital [deg]")
     ax.set_xticks(
         [0, np.pi/6, np.pi/3, np.pi/2, 2*np.pi/3, 5*np.pi/6, np.pi,
@@ -106,11 +107,7 @@ def main() -> None:
          r"$210$", r"$240$", r"$270$", r"$300$", r"$330$", r"$360$"]
     )
     ax.set_title(title)
-
-    if STATE.upper() == "INC":
-        ax.set_ylabel("Flujo de calor [W/m²]")
-    else:
-        ax.set_ylabel("Flujo de calor [W]")
+    ax.set_ylabel("Flujo de calor [W/m²]")
 
     # Dibujar cada grupo con su emisividad correspondiente
     for label, (F_i, mat) in GROUPS.items():

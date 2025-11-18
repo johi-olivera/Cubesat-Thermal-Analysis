@@ -22,8 +22,8 @@ from constants import (
 Configuración “de escenario”
 ----------------------------
 'INC' = flujo incidente [W/m^2]
-'BOL' = absorbido BOL [W]
-'EOL' = absorbido EOL [W]
+'BOL' = flujo absorbido BOL [W/m^2]
+'EOL' = flujo absorbido EOL [W/m^2]
 """
 STATE = "INC"
 
@@ -49,9 +49,9 @@ def get_params(state: str) -> Tuple[float, float, float, float, str]:
     if st == "INC":
         return 1.0, 1.0, 1.0, 1.0, "Flujo por albedo incidente"
     elif st == "BOL":
-        return ALPHA_S_BOL, AREA_CARA_Y, F_AEFF, ETA_ELEC, "Flujo por albedo absorbido en BOL"
+        return ALPHA_S_BOL, 1.0, F_AEFF, ETA_ELEC, "Flujo por albedo absorbido en BOL"
     elif st == "EOL":
-        return ALPHA_S_EOL, AREA_CARA_Y, F_AEFF, ETA_ELEC, "Flujo por albedo absorbido en EOL"
+        return ALPHA_S_EOL, 1.0, F_AEFF, ETA_ELEC, "Flujo por albedo absorbido en EOL"
     else:
         raise ValueError(f"STATE inválido: {state}")
 
@@ -61,9 +61,9 @@ def get_params(state: str) -> Tuple[float, float, float, float, str]:
 def albedo_power_group(alpha_s: float, Ai: float, f_Aeff: float, eta: float,
                        F_i: float, theta: np.ndarray, mask: np.ndarray) -> np.ndarray:
     """
-    Q(θ) = α_s * γ * S_V * F_i * A_i * f_Aeff * η * cos(θ), θ ∈ fuera-de-eclipse; 0 si no.
+    Q(θ) = α_s * γ * S_V * F_i * f_Aeff * η * cos(θ), θ ∈ fuera-de-eclipse; 0 si no.
     """
-    base = alpha_s * GAMMA * SCV * F_i * Ai * f_Aeff * eta
+    base = alpha_s * GAMMA * SCV * F_i * f_Aeff * eta
     Q = base * np.cos(theta)
     Q[~mask] = 0.0
     return Q
@@ -88,6 +88,8 @@ def main() -> None:
     ax = plt.gca()
     ax.grid(True, alpha=0.35)
     ax.set_xlim(0, 2*np.pi)
+    # Ajustar escala del eje Y para todos los gráficos
+    ax.set_ylim(0, 2000)
     ax.set_xlabel("Ángulo orbital [deg]")
     ax.set_xticks(
         [0, np.pi/6, np.pi/3, np.pi/2, 2*np.pi/3, 5*np.pi/6, np.pi,
@@ -98,23 +100,7 @@ def main() -> None:
          r"$210$", r"$240$", r"$270$", r"$300$", r"$330$", r"$360$"]
     )
     ax.set_title(title)
-
-    if STATE.upper() == "INC":
-        ax.set_ylabel("Flujo de calor [W/m²]")
-    else:
-        ax.set_ylabel("Flujo de calor [W]")
-        if STATE.upper() == "BOL":
-            ax.set_yticks([0, 10, 20, 30, 40, 50, 60, 70, 80, 90])
-            ax.set_yticklabels(
-                [r"$0$", r"$10$", r"$20$", r"$30$", r"$40$", r"$50$",
-                 r"$60$", r"$70$", r"$80$", r"$90$"]
-            )
-        elif STATE.upper() == "EOL":
-            ax.set_yticks([0, 20, 40, 60, 80, 100, 120, 140])
-            ax.set_yticklabels(
-                [r"$0$", r"$20$", r"$40$", r"$60$", r"$80$",
-                 r"$100$", r"$120$", r"$140$"]
-            )
+    ax.set_ylabel("Flujo de calor [W/m²]")
 
     # Dibujar cada grupo
     for label, F_i in GROUPS.items():

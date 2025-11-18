@@ -22,7 +22,7 @@ Configuración “de escenario”
 'BOL' = absorbido BOL [W]
 'EOL' = absorbido EOL [W]
 """
-STATE = "BOL"
+STATE = "INC"
 
 # ----------------------------
 # Utilidades y dominio angular
