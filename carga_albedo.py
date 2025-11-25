@@ -25,7 +25,7 @@ Configuración “de escenario”
 'BOL' = flujo absorbido BOL [W/m^2]
 'EOL' = flujo absorbido EOL [W/m^2]
 """
-STATE = "INC"
+STATE = "EOL"
 
 # ----------------------------
 # Dominio angular y máscaras
@@ -89,7 +89,7 @@ def main() -> None:
     ax.grid(True, alpha=0.35)
     ax.set_xlim(0, 2*np.pi)
     # Ajustar escala del eje Y para todos los gráficos
-    ax.set_ylim(0, 2000)
+    ax.set_ylim(-100, 1500)
     ax.set_xlabel("Ángulo orbital [deg]")
     ax.set_xticks(
         [0, np.pi/6, np.pi/3, np.pi/2, 2*np.pi/3, 5*np.pi/6, np.pi,

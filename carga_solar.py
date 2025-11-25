@@ -129,11 +129,7 @@ def main() -> None:
         )
     else:
         ax.set_ylabel("Flujo de calor [W]")
-        if STATE.upper() == "EOL":
-            ax.set_yticks([0, 30, 60, 90, 120, 150, 180, 210])
-            ax.set_yticklabels(
-                [r"$0$", r"$30$", r"$60$", r"$90$", r"$120$", r"$150$", r"$180$", r"$210$"]
-            )
+        ax.set_ylim(-10, 200)
 
     # Dibujar cada cara
     for key in ["Z+", "Z-", "X+", "X-", "Y+", "Y-"]:

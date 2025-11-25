@@ -26,7 +26,7 @@ Configuración “de escenario”
 'BOL' = flujo absorbido BOL [W/m^2]
 'EOL' = flujo absorbido EOL [W/m^2]
 """
-STATE = "INC"
+STATE = "EOL"
 
 # ----------------------------
 # Dominio y ejes
@@ -96,7 +96,7 @@ def main() -> None:
     ax = plt.gca()
     ax.grid(True, alpha=0.35)
     ax.set_xlim(0, 2*np.pi)
-    ax.set_ylim(0, 150)
+    ax.set_ylim(-10, 150)
     ax.set_xlabel("Ángulo orbital [deg]")
     ax.set_xticks(
         [0, np.pi/6, np.pi/3, np.pi/2, 2*np.pi/3, 5*np.pi/6, np.pi,
