@@ -1,4 +1,7 @@
+# ============================================================
+# ecNodales_Caliente.py — Fase 3
 # By: Johanna Olivera y Ailin Ferrari
+# ============================================================
 
 # Caso CALIENTE (EOL)
 
@@ -13,9 +16,9 @@ eps_wc = props['eps_wc']
 alpha_wc = props['alpha_wc']
 get_potencia = props['get_potencia']  # devuelve potencia para nodos 12/13 según θ
 
-# ----------------------------
+# ============================================================
 # Helpers de ventanas angulares
-# ----------------------------
+# ============================================================
 def _theta_mask_sol(theta_deg: float) -> bool:
     return ((THETA_C1 < theta_deg < THETA_C2) or (THETA_C3 < theta_deg < THETA_C4))
 
@@ -25,9 +28,9 @@ def _theta_mask_alb(theta_deg: float) -> bool:
 def _cos_phi(theta_deg: float) -> float:
     return -np.cos(np.radians(theta_deg))
 
-# ----------------------------
+# ============================================================
 # Núcleo por tipo (idéntico a nodeC, cambia get_potencia y props)
-# ----------------------------
+# ============================================================
 def _panel_common(i, T, dt, cond_row, fv_row, theta_deg, F_planet):
     Ti = T[i]
     cos_phi = _cos_phi(theta_deg)
@@ -71,9 +74,9 @@ def _box_common(i, T, dt, cond_row, fv_row, area, masa, cp, nodo_id, theta_deg):
     pot_dis = get_potencia(theta_deg, nodo_id)
     return Ti + (dt / (masa * cp)) * (q_cond + q_rad + pot_dis)
 
-# ----------------------------
+# ============================================================
 # Wrappers públicos
-# ----------------------------
+# ============================================================
 def ecNodo1(T, dt, cond_row, fv_row, theta):  return _panel_common(0, T, dt, cond_row, fv_row, theta, F_PLANET_ZPLUS)
 def ecNodo2(T, dt, cond_row, fv_row, theta):  return _panel_common(1, T, dt, cond_row, fv_row, theta, F_PLANET_ZPLUS)
 def ecNodo3(T, dt, cond_row, fv_row, theta):  return _panel_common(2, T, dt, cond_row, fv_row, theta, F_PLANET_LATERAL)

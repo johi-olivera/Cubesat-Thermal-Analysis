@@ -1,5 +1,7 @@
+# ============================================================
+# carga_solar.py — Fase 3
 # By: Johanna Olivera y Ailin Ferrari
-
+# ============================================================
 """
 - Calcula y grafica flujo solar incidente/absorbido por cara.
 - Reduce repetición con un mapeo cara --> (cos(phi), condición angular).
@@ -16,6 +18,7 @@ from constants import (
 )
 
 """
+IMPORTANTE PARA VER LOS GRÁFICOS DESEADOS
 Configuración “de escenario”
 ----------------------------
 'INC' = flujo incidente [W/m^2]

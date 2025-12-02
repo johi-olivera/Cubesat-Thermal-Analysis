@@ -1,11 +1,10 @@
 # ============================================================
-# simOrbital.py — Fase 3
+# simOrbital_Heaters.py — Fase 3
 # By: Johanna Olivera y Ailin Ferrari
 # ============================================================
 
 """
 - Elige caso (frío/caliente), simula 1 órbita y grafica resultados.
-- Menos repetición: lista de ecuaciones por nodo y lazo compacto.
 - AFT tomadas desde constants.py (en °C).
 """
 
@@ -19,44 +18,39 @@ from constants import (
     AFT_OBC_MIN, AFT_OBC_MAX, AFT_BAT_MIN, AFT_BAT_MAX
 )
 
-# ==========================================
+# ==========================================================
 # Configuración de simulación
-# ==========================================
+# ==========================================================
 T_TOTAL: float = 120000.0  
-DT: float = 1.0
-NODES_TOTAL: int = 15
+DT: float = 1.0           
+NODES_TOTAL: int = 15     
 NODES_SOLVE: int = 13
 
-# ==========================================
+# ==========================================================
 # Paleta
-# ==========================================
+# ==========================================================
 COLORS = [
     "#d35e60", "#d35e60", "#7293cb", "#7293cb", "#84ba5b", "#84ba5b",
     "#ff974c", "#ff974c", "#808585", "#9067a7", "#fc91ad", "#00a99a", "#8a6d3f"
 ]
 
-# ==========================================
-# Utilidades
-# ==========================================
+# ==========================================================
+# # Utilidades
+# ==========================================================
 def theta_deg(step: int, dt: float, period: float) -> float:
     """Ángulo orbital en grados, normalizado a [0,360)."""
     theta = (360.0 / period) * step * dt
     return theta % 360.0
 
-def pick_case() -> Tuple[str, object]:
-    """Pregunta por consola y retorna ('frio'|'caliente', módulo de ecuaciones)."""
-    op = -1
-    while op not in (1, 2):
-        print("\n==== Menú ====\n< 1 > Caso frío\n< 2 > Caso caliente")
-        try:
-            op = int(input("\n>> Ingrese la opción a simular: "))
-        except Exception:
-            op = -1
+def pick_case():
+    print("\n==== Menú ====\n< 1 > Caso frío (con heaters)\n< 2 > Caso caliente")
+    op = int(input("\n>> Ingrese opción: "))
+
     if op == 2:
         import ecNodales_Caliente as ecs
         return "caliente", ecs
     else:
-        import ecNodales_Frio as ecs
+        import ecNodales_Frio_Heaters as ecs
         return "frio", ecs
 
 def build_node_funcs(ecs_mod) -> List[Callable]:
@@ -71,7 +65,7 @@ def build_node_funcs(ecs_mod) -> List[Callable]:
 def simulate(caso: str, ecs_mod) -> Tuple[np.ndarray, np.ndarray]:
     """Corre la simulación y devuelve (temps[K], t[s])."""
     props = get_propiedades_caso(caso)
-    T0 = np.asarray(props["T_inicial"], dtype=float)
+    T0 = np.asarray(props["T_inicial"], dtype=float)  # [K]
 
     steps = int(T_TOTAL // DT)
     temps = np.zeros((NODES_TOTAL, steps), dtype=float)
@@ -85,19 +79,19 @@ def simulate(caso: str, ecs_mod) -> Tuple[np.ndarray, np.ndarray]:
     for p in range(1, steps):
         prev = temps[:, p - 1]
         theta = theta_deg(p, DT, ORBITAL_PERIOD)
-        # Avance explícito de nodos 1..13
+
         for i in range(NODES_SOLVE):
             temps[i, p] = node_funcs[i](prev, DT, cond_rows[i], fv_rows[i], theta)
-        # Nodos "fuente": Venus y espacio
+        
         temps[13, p] = T_VENUS
         temps[14, p] = T_SPACE
 
     t_axis = np.arange(0.0, T_TOTAL, DT)
     return temps, t_axis
 
-# ==========================================
+# ==========================================================
 # Gráficos
-# ==========================================
+# ==========================================================
 def plot_all_nodes(temps_K: np.ndarray, t_axis: np.ndarray) -> None:
     """Gráfico general de todos los nodos (en °C)."""
     fig, ax = plt.subplots()
@@ -146,9 +140,9 @@ def print_extremes(temps_K: np.ndarray) -> None:
         print(f"> Tmax nodo {node}: {np.max(t_c):.3f} °C")
         print(f"> Tmin nodo {node}: {np.min(t_c):.3f} °C")
 
-# ==========================================
+# ==========================================================
 # Main
-# ==========================================
+# ==========================================================
 def main() -> None:
     caso, ecs_mod = pick_case()
     temps_K, t_axis = simulate(caso, ecs_mod)

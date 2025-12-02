@@ -1,7 +1,9 @@
+# ============================================================
+# carga_infrarroja.py — Fase 3
 # By: Johanna Olivera y Ailin Ferrari
+# ============================================================
 
 """
-
 - Calcula y grafica el flujo IR (incidente/absorbido) por cara.
 - IR independiente de θ → curvas constantes vs. ángulo orbital.
 - Grupos: Z+, Z−, X± (solar array), Y± (white coating).
@@ -20,6 +22,7 @@ from constants import (
 )
 
 """
+IMPORTANTE PARA VER LOS GRÁFICOS DESEADOS
 Configuración “de escenario”
 ----------------------------
 'INC' = flujo incidente [W/m^2]
@@ -28,14 +31,14 @@ Configuración “de escenario”
 """
 STATE = "EOL"
 
-# ----------------------------
+# ============================================================
 # Dominio y ejes
-# ----------------------------
+# ============================================================
 th = np.linspace(0.0, 2.0 * np.pi, 1000)
 
-# ----------------------------
+# ============================================================
 # Parámetros por STATE
-# ----------------------------
+# ============================================================
 def get_params(state: str):
     """
     Devuelve:
@@ -64,9 +67,9 @@ def get_params(state: str):
         raise ValueError(f"STATE inválido: {state}")
     return eps_sa, eps_wtc, Ai, title
 
-# ----------------------------
+# ============================================================
 # Ley general IR por grupo
-# ----------------------------
+# ============================================================
 def ir_power(F_i: float, eps_i: float, Ai: float, npts: int) -> np.ndarray:
     """
     q = ε_i * F_i * σ T_V^4  (flujo, W/m², constante en θ)
@@ -75,9 +78,9 @@ def ir_power(F_i: float, eps_i: float, Ai: float, npts: int) -> np.ndarray:
     value = eps_i * F_i * SIGMA * (T_VENUS ** 4)
     return np.full(npts, value, dtype=float)
 
-# ----------------------------
+# ============================================================
 # Grupos y factores de vista
-# ----------------------------
+# ============================================================
 # Nota: Z- no ve planeta --> F = 0
 GROUPS: Dict[str, Tuple[float, str]] = {
     "Cara Z+": (F_PLANET_ZPLUS, "sa"),
@@ -86,9 +89,9 @@ GROUPS: Dict[str, Tuple[float, str]] = {
     "Cara Y±": (F_PLANET_LATERAL, "wtc"),
 }
 
-# ----------------------------
+# ============================================================
 # Plot
-# ----------------------------
+# ============================================================
 def main() -> None:
     eps_sa_fn, eps_wtc_fn, Ai, title = get_params(STATE)
 

@@ -1,4 +1,7 @@
+# ============================================================
+# carga_albedo.py — Fase 3
 # By: Johanna Olivera y Ailin Ferrari
+# ============================================================
 
 """
 - Calcula y grafica el flujo por albedo (incidente/absorbido) por cara.
@@ -19,6 +22,7 @@ from constants import (
 )
 
 """
+IMPORTANTE PARA VER LOS GRÁFICOS DESEADOS
 Configuración “de escenario”
 ----------------------------
 'INC' = flujo incidente [W/m^2]
@@ -27,9 +31,9 @@ Configuración “de escenario”
 """
 STATE = "EOL"
 
-# ----------------------------
+# ============================================================
 # Dominio angular y máscaras
-# ----------------------------
+# ============================================================
 c1 = np.radians(THETA_C1)  # Inicio de eclipse (115° aprox)
 c4 = np.radians(THETA_C4)  # Fin de eclipse (270° aprox)
 th = np.linspace(0.0, 2.0 * np.pi, 1000)
@@ -37,9 +41,9 @@ th = np.linspace(0.0, 2.0 * np.pi, 1000)
 # Albedo distinto de 0 solo fuera del eclipse
 mask_out_eclipse = (th <= c1) | (th >= c4)
 
-# ----------------------------
+# ============================================================
 # Parámetros por STATE
-# ----------------------------
+# ============================================================
 def get_params(state: str) -> Tuple[float, float, float, float, str]:
     """
     Devuelve (alpha_s, A_i, f_Aeff, eta, titulo) según el modo.
@@ -55,9 +59,9 @@ def get_params(state: str) -> Tuple[float, float, float, float, str]:
     else:
         raise ValueError(f"STATE inválido: {state}")
 
-# ----------------------------
+# ============================================================
 # Ley general de albedo por cara
-# ----------------------------
+# ============================================================
 def albedo_power_group(alpha_s: float, Ai: float, f_Aeff: float, eta: float,
                        F_i: float, theta: np.ndarray, mask: np.ndarray) -> np.ndarray:
     """
@@ -68,9 +72,9 @@ def albedo_power_group(alpha_s: float, Ai: float, f_Aeff: float, eta: float,
     Q[~mask] = 0.0
     return Q
 
-# ----------------------------
+# ============================================================
 # Grupos de caras y factores F_i
-# ----------------------------
+# ============================================================
 # Z- no ve planeta --> F = 0
 GROUPS: Dict[str, float] = {
     "Cara Z+": F_PLANET_ZPLUS,
@@ -78,9 +82,9 @@ GROUPS: Dict[str, float] = {
     "Cara X±/Y±": F_PLANET_LATERAL,  # X+, X-, Y+, Y- comparten F_lateral
 }
 
-# ----------------------------
+# ============================================================
 # Plot
-# ----------------------------
+# ============================================================
 def main() -> None:
     alpha_s, Ai, f_Aeff, eta, title = get_params(STATE)
 
@@ -88,7 +92,6 @@ def main() -> None:
     ax = plt.gca()
     ax.grid(True, alpha=0.35)
     ax.set_xlim(0, 2*np.pi)
-    # Ajustar escala del eje Y para todos los gráficos
     ax.set_ylim(-100, 1500)
     ax.set_xlabel("Ángulo orbital [deg]")
     ax.set_xticks(
